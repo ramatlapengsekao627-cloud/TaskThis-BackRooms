@@ -16,11 +16,11 @@ app.use(express.json())
 
 // connects the tasks routes - all task endpoints are handled in routes/tasks.js
 const taskRoutes = require('./routes/tasks')
-app.use('/tasks', taskRoutes)
+app.use('/api/tasks', taskRoutes)
 
 // connects the auth routes - all auth endpoints are handled in routes/auth.js
 const authRoutes = require('./routes/auth')
-app.use('/auth', authRoutes)
+app.use('/api/auth', authRoutes)
 
 // starts the server on port 5000
 const PORT = process.env.PORT || 5000

@@ -1,29 +1,20 @@
-// db.js - handles the connection to the SQL Server database
-// uses SQL Server Authentication with username and password
+// db.js - handles connection to MySQL database hosted on Railway
+// uses mysql2 package instead of mssql
 
-const sql = require('mssql')
+const mysql = require('mysql2/promise')
 
-const config = {
-  server: 'localhost',
-  port: 58804,
-  database: process.env.DB_NAME,
+// creates a connection pool using Railway MySQL credentials from .env file
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-  }
-}
+  database: process.env.DB_NAME,
+})
 
-// creates a connection pool - reuses connections instead of creating new ones each time
-const poolPromise = new sql.ConnectionPool(config)
-  .connect()
-  .then(pool => {
-    console.log('SQL Database connected successfully')
-    return pool
-  })
-  .catch(err => {
-    console.log('Database connection failed:', err)
-  })
+// tests the connection when server starts
+pool.getConnection()
+  .then(() => console.log('MySQL database connected successfully'))
+  .catch(err => console.log('Database connection failed:', err.message))
 
-module.exports = { sql, poolPromise }
+module.exports = pool
